@@ -1,0 +1,606 @@
+<apex:page standardController="Account"
+    extensions="EditBusinessAccount_ctr" id="page1">
+    <apex:sectionHeader title="{!$ObjectType.Account.Label}"
+        subtitle="{!Account.Name}" />
+    <apex:form id="form1">
+        <apex:actionRegion >
+            <apex:pageBlock title="{!$Label.BussinesAccountDetail}"
+                id="pageBlock1">
+                <apex:pageBlockButtons >
+                    <apex:commandButton id="SaveAll" action="{!btnSave}"
+                        value="{!$Label.site.save}" />
+                    <apex:commandButton id="SaveAndNewPA" action="{!btnSaveAndNewPA}"
+                        value="{!$Label.site.save} & {!$Label.NewPersonalAccount}" />
+                    <apex:commandButton id="SaveAndNewBA" action="{!btnSaveAndNewBA}"
+                        value="{!$Label.site.save} & {!$Label.NewBusinessAccount}" />
+                    <apex:commandButton id="CancelAll" action="{!Cancel}"
+                        value="{!$Label.site.cancel}" immediate="true" />
+                </apex:pageBlockButtons>
+                <apex:pageMessages id="messages1" />
+                <apex:pageBlockSection columns="2"
+                    Title="{!$Label.AccountInformation}">
+                    <!-- <apex:inputField value="{!Account.Migration_Id__c}" /> -->
+                    <apex:inputField value="{!Account.Name}" />
+                    <apex:inputField value="{!Account.Main_Contact__c}" />
+                    <apex:inputField value="{!Account.AccountNumber}"
+                        onkeypress="return onlyNumber(event,this);"
+                        onkeyup="mask(event,this);" onchange="mask(event,this);" />
+                    <apex:inputField value="{!Account.Registration_date__c}" />
+                    <apex:inputField value="{!Account.Coverage__c}" />
+                    <apex:inputField value="{!Account.ANS_Code__c}" />
+                    <apex:inputField value="{!Account.Registration__c}" />
+                    <!-- <apex:inputField value="{!Account.Website}" /> -->
+                    <apex:inputField value="{!Account.OPS_Profile__c}" />
+                    <apex:inputField value="{!Account.Exempt__c}" />
+                    <apex:inputField value="{!Account.OPS_Type__c}" />
+                    <apex:inputField value="{!Account.No_Lives__c}" />
+                    <apex:inputField value="{!Account.Status__c}" required="true" />
+                    <apex:inputField value="{!Account.Insc_Estadual__c}" />
+                    <apex:inputField value="{!Account.Recipients__c}" />
+                    <apex:inputField value="{!Account.Bussines_Type__c}" id="AccountType" />
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="2" Title="{!$Label.Structure}"
+                    rendered="{!renderOPSSections}">
+                    <apex:inputField value="{!Account.Pay_medicine__c}" />
+                    <apex:inputField value="{!Account.Manages_Chronic__c}" />
+                    <apex:inputField value="{!Account.Acquisition_way__c}" />
+                    <apex:inputField value="{!Account.Obs_Benefits__c}" />
+                    <apex:inputField value="{!Account.PBM__c}" />
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="2" Title="{!$Label.GMDetails}"
+                    rendered="{!renderOPSSections}">
+                    <apex:inputField value="{!Account.KAM_GM__c}" />
+                    <apex:inputField value="{!Account.Classification_GM__c}" />
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="2" Title="{!$Label.ONCODetails}"
+                    rendered="{!renderOPSSections}">
+                    <apex:inputField value="{!Account.KAM_Onco__c}" />
+                    <apex:inputField value="{!Account.Classification_GM__c}" />
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="{!$ObjectType.Phone__c.LabelPlural}"
+                    columns="1" id="Phones">
+                    <apex:actionRegion >
+                        <apex:actionFunction name="searchLocalCode"
+                            action="{!searchLocalCode}"
+                            rerender="page1:form1:pageBlock1:Phones"
+                            status="loadingStatusPhone" oncomplete="setLocalCodeFocus();" />
+                        <apex:pageBlockTable value="{!phones}" var="p"
+                            rendered="{!NOT(ISNULL(phones))}">
+                            <apex:column >
+                                <apex:commandLink action="{!btnDeletePhone}"
+                                    value="{!$Label.Delete}" id="DeleteLink"
+                                    onclick="completeMandatoryValues(this.id,['PhoneNumber','LocalCode'],[],['PhoneType','StatusPhone', 'MainPhone'],[],[],[]);disableInputs(); if(!isEnableLink()) return false;"
+                                    rerender="page1:form1:pageBlock1:Phones"
+                                    status="loadingStatusPhone" oncomplete="enableInputs();">
+                                    <apex:param name="selectedIndex" assignTo="{!selectedIndex}"
+                                        value="{!p.index}" />
+                                </apex:commandLink>
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Phone__c.fields.Type__c.label}">
+                                <apex:inputField value="{!p.objPhone.Type__c}" required="true"
+                                    id="PhoneType" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Phone__c.fields.Local_Code__c.label}">
+                                <apex:inputField value="{!p.objPhone.Local_Code__c}"
+                                    id="LocalCode"
+                                    onkeypress="return validateLocalCode(event,this);"
+                                    onkeyup="return changeLocalCode(event,this);"
+                                    style="width:30px;">
+                                    <apex:actionSupport event="onchange"
+                                        action="{!searchLocalCode}"
+                                        onsubmit="if(validatePhone(this.id))return false;disableInputs();"
+                                        rerender="page1:form1:pageBlock1:Phones"
+                                        status="loadingStatusPhone" oncomplete="enableInputs();">
+                                    </apex:actionSupport>
+                                </apex:inputField>
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Phone__c.fields.Phone_Number__c.label}">
+                                <apex:inputField value="{!p.objPhone.Phone_Number__c}"
+                                    id="PhoneNumber">
+                                    <apex:actionSupport event="onchange"
+                                        action="{!searchLocalCode}"
+                                        rerender="page1:form1:pageBlock1:Phones"
+                                        status="loadingStatusPhone"
+                                        onsubmit="if(validatePhone(this.id)) return false;disableInputs();focusObj = this;"
+                                        oncomplete="setLocalCodeFocus();">
+                                    </apex:actionSupport>
+                                </apex:inputField>
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Phone__c.fields.Exten__c.label}">
+                                <apex:inputField value="{!p.objPhone.Exten__c}" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Phone__c.fields.Main_Phone__c.label}">
+                                <apex:inputField value="{!p.objPhone.Main_Phone__c}"
+                                    required="true" id="MainPhone" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Phone__c.fields.State__c.label}">
+                                <apex:outputField value="{!p.objPhone.State__c}" />
+                                <apex:inputHidden value="{!p.objPhone.State__c}" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Phone__c.fields.Status__c.label}">
+                                <apex:inputField value="{!p.objPhone.Status__c}" required="true"
+                                    id="StatusPhone" />
+                            </apex:column>
+                        </apex:pageBlockTable>
+                        <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                            rendered="{!(ISNULL(phones))}" styleClass="noRowsHeader"></apex:outputLabel>
+                        <apex:pageBlockSectionItem >
+                            <apex:commandButton id="btnAddPhone" action="{!btnAddPhone}"
+                                value="{!$Label.Add} {!$ObjectType.Phone__c.Label}"
+                                rerender="page1:form1:pageBlock1:Phones"
+                                status="loadingStatusPhone" onclick="disableInputs();"
+                                oncomplete="enableInputs();" />
+                            <apex:actionStatus id="loadingStatusPhone">
+                                <apex:facet name="start">
+                                    <apex:outputLabel value="{!$Label.Loading}" />
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </apex:pageBlockSectionItem>
+                    </apex:actionRegion>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="{!$ObjectType.Address__c.LabelPlural}"
+                    columns="1" id="Addresses">
+                    <apex:actionRegion >
+                        <apex:pageBlockTable value="{!addresses}" var="a"
+                            rendered="{!NOT(ISNULL(addresses))}">
+                            <apex:column >
+                                <apex:commandLink action="{!btnDeleteAddress}"
+                                    value="{!$Label.Delete}" id="DeleteLink"
+                                    onclick="completeMandatoryValues(this.id,['Number'],[],['Status','Type'],[],[],[]);disableInputs();if(!isEnableLink()) return false;"
+                                    rerender="page1:form1:pageBlock1:Addresses"
+                                    status="loadingStatusAddress" oncomplete="enableInputs();">
+                                    <apex:param name="selectedIndex" assignTo="{!selectedIndex}"
+                                        value="{!a.index}" />
+                                </apex:commandLink>
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.Post_Code__c.label}">
+                                <apex:inputField value="{!a.objAddress.Post_Code__c}"
+                                    style="width:50px;" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.Post_code_number__c.label}">
+                                <apex:inputField value="{!a.objAddress.Post_code_number__c}"
+                                    style="width:50px;" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.Address_Name__c.label}">
+                                <apex:inputField value="{!a.objAddress.Address_Name__c}"
+                                    style="width:100px;" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.Number__c.label}">
+                                <apex:inputField value="{!a.objAddress.Number__c}"
+                                    required="true" id="Number" style="width:50px;" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.Complement__c.label}">
+                                <apex:inputField value="{!a.objAddress.Complement__c}"
+                                    style="width:100px;" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.District__c.label}">
+                                <apex:inputField value="{!a.objAddress.District__c}"
+                                    style="width:100px;" />
+                            </apex:column>
+
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.City__c.label}">
+                                <apex:inputField value="{!a.objAddress.City__c}"
+                                    style="width:100px;" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.State__c.label}">
+                                <apex:inputField value="{!a.objAddress.State__c}"
+                                    style="width:30px;" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.Type__c.label}">
+                                <apex:inputField value="{!a.objAddress.Type__c}" required="true"
+                                    id="Type" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Address__c.fields.Status__c.label}">
+                                <apex:inputField value="{!a.objAddress.Status__c}"
+                                    required="true" id="Status" style="width:60px;" />
+                            </apex:column>
+
+                            <apex:column headerValue="{!$Label.Main}">
+                                <apex:inputField value="{!a.objAddress.Is_Main_Address__c}" />
+                            </apex:column>
+
+
+                        </apex:pageBlockTable>
+                        <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                            rendered="{!(ISNULL(addresses))}" styleClass="noRowsHeader"></apex:outputLabel>
+                        <apex:pageBlockSectionItem >
+                            <apex:commandButton id="btnAddAddress" action="{!btnAddAddress}"
+                                value="{!$Label.Add} {!$ObjectType.Address__c.Label}"
+                                rerender="page1:form1:pageBlock1:Addresses"
+                                status="loadingStatusAddress" onclick="disableInputs();"
+                                oncomplete="enableInputs();" />
+                            <apex:actionStatus id="loadingStatusAddress">
+                                <apex:facet name="start">
+                                    <apex:outputLabel value="{!$Label.Loading}" />
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </apex:pageBlockSectionItem>
+                    </apex:actionRegion>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="{!$ObjectType.Email_Address__c.LabelPlural}" columns="1"
+                    id="Emails">
+                    <apex:actionRegion >
+                        <apex:pageBlockTable value="{!emails}" var="e"
+                            rendered="{!NOT(ISNULL(emails))}">
+                            <apex:column >
+                                <apex:commandLink action="{!btnDeleteEmail}"
+                                    value="{!$Label.Delete}" id="DeleteLink"
+                                    onclick="completeMandatoryValues(this.id,[],['EmailAddress'],[],[],[],[]);disableInputs();if(!isEnableLink()) return false;"
+                                    rerender="page1:form1:pageBlock1:Emails"
+                                    status="loadingStatusEmail" oncomplete="enableInputs();">
+                                    <apex:param name="selectedIndex" assignTo="{!selectedIndex}"
+                                        value="{!e.index}" />
+                                </apex:commandLink>
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Email_Address__c.fields.email_Address__c.label}">
+                                <apex:inputField value="{!e.objEmail.email_Address__c}"
+                                    required="true" id="EmailAddress" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.Email_Address__c.fields.Main_email__c.label}">
+                                <apex:inputField value="{!e.objEmail.Main_email__c}" />
+                            </apex:column>
+                        </apex:pageBlockTable>
+                        <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                            rendered="{!(ISNULL(Emails))}" styleClass="noRowsHeader"></apex:outputLabel>
+                        <apex:pageBlockSectionItem >
+                            <apex:commandButton id="btnAddEmail" action="{!btnAddEmail}"
+                                value="{!$Label.Add} {!$ObjectType.Email_Address__c.Label}"
+                                rerender="page1:form1:pageBlock1:Emails"
+                                status="loadingStatusEmail" onclick="disableInputs();"
+                                oncomplete="enableInputs();" />
+                            <apex:actionStatus id="loadingStatusEmail">
+                                <apex:facet name="start">
+                                    <apex:outputLabel value="{!$Label.Loading}" />
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </apex:pageBlockSectionItem>
+                    </apex:actionRegion>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="{!$ObjectType.BA_PA__c.LabelPlural}"
+                    columns="1" id="BAxPAs">
+                    <apex:actionRegion >
+                        <apex:pageBlockTable value="{!BAxPAs}" var="b"
+                            rendered="{!NOT(ISNULL(BAxPAs))}">
+                            <apex:column >
+                                <apex:commandLink action="{!btnDeleteBAxPA}"
+                                    value="{!$Label.Delete}" id="DeleteLink"
+                                    onclick="completeMandatoryValues(this.id,[],[],[],['BusinessCustomer'],['{!defaultAccount}'],['{!defaultAccountName}']);disableInputs();if(!isEnableLink()) return false;"
+                                    rerender="page1:form1:pageBlock1:BAxPAs"
+                                    status="loadingStatusBAxPA" oncomplete="enableInputs();">
+                                    <apex:param name="selectedIndex" assignTo="{!selectedIndex}"
+                                        value="{!b.index}" />
+                                </apex:commandLink>
+                            </apex:column>
+                            
+                            <apex:column headerValue="{!$ObjectType.BA_PA__c.fields.Business_Customer__c.label}" rendered="{!isBusinessAccount}">
+                                <apex:inputField value="{!b.objBAxPA.Business_Customer__c}"
+                                    required="true" id="BusinessCustomer" />
+                            </apex:column>
+                            <apex:column headerValue="{!$ObjectType.BA_PA__c.fields.Personal_Customer__c.label}" rendered="{!NOT(isBusinessAccount)}">
+                                <apex:inputField value="{!b.objBAxPA.Personal_Customer__c}"
+                                    required="true" id="PersonalCustomer" />
+                            </apex:column>
+                            
+                            <apex:column headerValue="{!$ObjectType.BA_PA__c.fields.Active__c.label}">
+                                <apex:inputField value="{!b.objBAxPA.Active__c}" />
+                            </apex:column>
+                        </apex:pageBlockTable>
+                        <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                            rendered="{!(ISNULL(BAxPAs))}" styleClass="noRowsHeader"></apex:outputLabel>
+                        <apex:pageBlockSectionItem >
+                            <apex:commandButton id="btnAddBAxPA" action="{!btnAddBAxPA}"
+                                value="{!$Label.Add} {!$ObjectType.BA_PA__c.Label}"
+                                rerender="page1:form1:pageBlock1:BAxPAs"
+                                status="loadingStatusBAxPA" onclick="disableInputs();"
+                                oncomplete="enableInputs();" />
+                            <apex:actionStatus id="loadingStatusBAxPA">
+                                <apex:facet name="start">
+                                    <apex:outputLabel value="{!$Label.Loading}" />
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </apex:pageBlockSectionItem>
+                    </apex:actionRegion>
+                </apex:pageBlockSection>
+                <!--  <apex:pageBlockSection columns="2"
+                    Title="{!$Label.SystemInformationTitleSection}">
+                    <apex:outputField value="{!Account.ParentId}" />
+                </apex:pageBlockSection>-->
+            </apex:pageBlock>
+        </apex:actionRegion>
+    </apex:form>
+    <script>
+    
+    var oldonload = window.onload; 
+    window.onload = init; 
+    
+    function init(){        
+        if(oldonload!=null)oldonload();
+    }
+    
+        var posCPF;
+        var charCPF;
+    
+    function onlyNumber(e,obj) {
+        var key;
+        if (window.event) {
+            key = window.event.keyCode; //IE
+        } else {
+            key = e.which; //firefox
+        }
+        charCPF= "";
+        if ((key < 48 || key > 57) && key!=8 && key!=0 ) {
+            return false;
+        } else {
+            posCPF = getSelectionStart(obj);
+            if( key!=8 && key!=0 ){
+                charCPF = String.fromCharCode(key);
+                return false;
+            }else{
+                return true;
+            }
+        }
+    }
+    function mask(e,obj) {
+        if (window.event) {
+            key = window.event.keyCode;
+            if( key==8 || key==39 || key==37 || key==46 ){
+                charCPF= "";
+            }
+        }
+        var mask = "__.___.___/____-__";
+        var newPosCPF = getSelectionStart(obj);
+        if(obj.value == ""){
+            obj.value = mask;
+        }
+        //Insertar caracteres
+        var str = obj.value;
+        var i;
+        var str2 = "";
+        for(i=0;i<str.length;i++){
+            if(i==posCPF){
+                str2 += charCPF;
+            }
+            str2 += str.charAt(i);
+        }
+        //Calcular con mascara
+        str = str2.replace(/\./g,"").replace("-","").replace(/\_/g,"").replace("/","");
+        var i
+        for(i=0;i<str.length;i++){
+            mask = mask.replace("_",str.charAt(i));
+        }       
+        obj.value = mask;
+        
+        //Posicionar Cursor
+        if(charCPF != ""){
+            firstMark = mask.indexOf("_");
+            if(firstMark != -1 && firstMark<posCPF){
+                posCPF = firstMark-1;
+            }
+            if(mask.charAt(posCPF+1) == "." || mask.charAt(posCPF+1) == "-" || mask.charAt(posCPF+1) == "/"){
+                posCPF++;
+            }
+            ponCursorEnPos(obj,posCPF+1);
+        }else{
+            ponCursorEnPos(obj,newPosCPF);
+            
+        }
+        
+    }
+
+    function getSelectionStart(o) {
+        if (o.createTextRange) {
+            var r = document.selection.createRange().duplicate()
+            r.moveEnd('character', o.value.length)
+            if (r.text == '') return o.value.length
+            return o.value.lastIndexOf(r.text)
+        } else return o.selectionStart
+    } 
+    
+    function ponCursorEnPos(o,pos){ 
+        if(typeof document.selection != 'undefined' && document.selection){        //método IE
+            var tex=o.value; 
+            o.value='';  
+            o.focus(); 
+            var str = document.selection.createRange();  
+            o.value=tex;
+            str.move("character", pos); 
+            str.moveEnd("character", 0); 
+            str.select();
+        }
+        else if(typeof o.selectionStart != 'undefined'){                    //método estándar
+         o.setSelectionRange(pos,pos); 
+        }
+    }
+    
+    var enable_link = true;
+
+    function isEnableLink() {
+        if (enable_link) {
+            enable_link = false;
+            return true;
+        }
+        return false;
+    }
+    
+    function validatePhone(id){
+        var path = id.split(':');
+        var path2 = path;
+        path[path.length - 1] = 'LocalCode';
+        obj = document.getElementById(path.join(':'));
+        path[path.length - 1] = 'PhoneNumber';
+        obj2 = document.getElementById(path.join(':'));
+        return (obj.value == "" || obj2.value == "");
+    }
+
+    function completeMandatoryValues(id, inputs, emails, selects, lookups,
+            defaultValues, defaultNames) {
+        if (enable_link) {
+            try {
+                var path = id.split(':');
+                for ( var x in inputs) {
+                    path[path.length - 1] = inputs[x];
+                    obj = document.getElementById(path.join(':'));
+                    if (obj.value == "") {
+                        obj.style.display = 'none';
+                        obj.value = '1';
+                    }
+                }
+                for ( var x in emails) {
+                    path[path.length - 1] = emails[x];
+                    obj = document.getElementById(path.join(':'));
+                    if (obj.value == "") {
+                        obj.style.display = 'none';
+                        obj.value = 'test@test.com';
+                    }
+                }
+                for ( var x in lookups) {
+                    path[path.length - 1] = lookups[x] + '_lkid';
+                    obj = document.getElementById(path.join(':'));
+                    if (obj.value == "000000000000000") {
+                        obj.value = defaultValues[x];
+                    }
+
+                    path[path.length - 1] = lookups[x] + '_lkold';
+                    obj = document.getElementById(path.join(':'));
+                    if (obj.value == "" || obj.value == "null") {
+                        obj.value = defaultNames[x];
+                    }
+
+                    path[path.length - 1] = lookups[x] + '_mod';
+                    obj = document.getElementById(path.join(':'));
+                    if (obj.value == "0") {
+                        obj.value = "1";
+                    }
+
+                    path[path.length - 1] = lookups[x];
+                    obj = document.getElementById(path.join(':'));
+                    if (obj.value == "") {
+                        obj.style.display = 'none';
+                        obj.value = defaultNames[x];
+                    }
+                }
+                for ( var x in selects) {
+                    path[path.length - 1] = selects[x];
+                    obj = document.getElementById(path.join(':'));
+                    if (obj.selectedIndex == 0) {
+                        obj.style.display = 'none';
+                        obj.selectedIndex = '1';
+                    }
+                }
+            } catch (err) {
+            }
+        }
+    }
+
+    function disableInputs() {
+        var page = document.getElementById("page1:form1");
+        var inputs = page.getElementsByTagName('input');
+        for ( var i = 0; i < inputs.length; i++) {
+            if (inputs[i].type == 'button' || inputs[i].type == 'text' ) {
+                inputs[i].disabled = true;
+            }
+        }
+        var selects = page.getElementsByTagName('select');
+        for ( var i = 0; i < selects.length; i++) {
+                selects[i].disabled = true;
+        }
+    }
+
+    function enableInputs() {
+        var page = document.getElementById("page1:form1");
+        var inputs = page.getElementsByTagName('input');
+        for ( var i = 0; i < inputs.length; i++) {
+            if (inputs[i].type == 'button' || inputs[i].type == 'text' ) {
+                inputs[i].disabled = false;
+            }
+        }
+        var selects = page.getElementsByTagName('select');
+        for ( var i = 0; i < selects.length; i++) {
+                selects[i].disabled = false;
+        }
+        enable_link = true;
+    }
+    
+
+    
+    function onlyValidChar(e,obj) {
+        var key;
+        if (window.event) {
+            key = window.event.keyCode; //IE
+        } else {
+            key = e.which; //firefox
+        }
+        if ( (key < 48 || key > 57) && (key < 65 || key > 90) && (key < 97 || key > 122) && key!=32 && key!=45 && key!=95 && key!=8 && key!=0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    function validateLocalCode(e,obj) {
+        var key;
+        if (window.event) {
+            key = window.event.keyCode; //IE
+        } else {
+            key = e.which; //firefox
+        }
+        
+        if ((key < 48 || key > 57) && key!=8 && key!=0) {
+            return false;
+        } else {
+            if( key!=8 && key!=0 ){
+                return obj.value.length<2 ;
+            }else{
+                return true;
+            }
+        }
+    } 
+    
+    
+    var focusObj;
+    
+    function changeLocalCode(e,obj) {
+        var key;
+        if (window.event) {
+            key = window.event.keyCode; //IE
+        } else {
+            key = e.which; //firefox
+        }
+        if(key!=8 && key!=0 && key!=9 && obj.value.length==2 && !validatePhone(obj.id)){
+            focusObj = obj;
+            disableInputs();
+            searchLocalCode();
+        }
+    }
+    
+    function setLocalCodeFocus(){
+        document.getElementById(focusObj.id).focus();
+        enableInputs();
+    }
+    
+    function getSelectionStart(o) {
+        if (o.createTextRange) {
+            var r = document.selection.createRange().duplicate()
+            r.moveEnd('character', o.value.length)
+            if (r.text == '') return o.value.length
+            return o.value.lastIndexOf(r.text)
+        } else return o.selectionStart
+    } 
+    
+    function ponCursorEnPos(o,pos){ 
+    if(typeof document.selection != 'undefined' && document.selection){        //método IE
+        var tex=o.value; 
+        o.value='';  
+        o.focus(); 
+        var str = document.selection.createRange();  
+        o.value=tex;
+        str.move("character", pos); 
+        str.moveEnd("character", 0); 
+        str.select();
+    }
+    else if(typeof o.selectionStart != 'undefined'){                    //método estándar
+        o.setSelectionRange(pos,pos); 
+    }
+}
+    </script>
+</apex:page>

@@ -1,0 +1,128 @@
+<apex:page controller="LookupPage_ctr" showHeader="false" sidebar="false" >
+	<script>
+		/*
+		In Internet Explorer window.onblur event is implemented incorrectly (as opposed to Firefox/Mozilla browsers). It is wrongly fired when focus is switched between HTML elements *inside* a window.
+		Suppose you're trying to automatically close a popup window when focus is switched to another (main) window (a common task). As a result of the described bug, clicking on any element *inside* a popup window or trying to select something there will also close a popup.
+		http://codingforums.com/showthread.php?p=500127
+		Below is a workaround.
+		*/
+		
+		
+		var active_element;
+		var bIsMSIE;
+		
+		function initiateSelfClosing()
+		{
+			if (navigator.appName == "Microsoft Internet Explorer") 
+			{
+				active_element = document.activeElement;
+				document.onfocusout = closeWnd;
+				bIsMSIE = true;
+			}
+			else 
+			{
+				window.onblur = closeWnd; 
+			}
+			setFocus();
+		}
+		
+		function setFocus(){
+			var inputs = document.getElementsByTagName('input');
+			for ( var i = 0; i < inputs.length; i++) {
+				if ( inputs[i].type == 'text' ) {
+					inputs[i].focus();
+					return;
+				}
+			}
+		}
+		
+		function closeWnd()
+		{
+			if (window.opener != null)
+			{
+				if (bIsMSIE && (active_element != document.activeElement))
+				{
+					active_element = document.activeElement;
+				}
+				else
+				{
+					window.close();
+				}
+			}
+		}
+		function noenter(e)
+		{
+			var key;
+			if(window.event)
+			{
+				key = window.event.keyCode;	 //IE
+			} 
+			else
+			{
+				key = e.which;	 //firefox
+			}
+			if( key == 13 )
+			{
+				doSearchJS();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	</script>
+	<body onload="initiateSelfClosing()"> 
+		<apex:sectionHeader title="{!$Label.Lookup}" />
+		<apex:form id="idForm01">
+			<apex:pageMessages showDetail="true" />
+			<apex:actionFunction name="doSearchJS" action="{!DoSearch}" reRender="idForm01" status="Searching" oncomplete="setFocus();"/>
+			<apex:pageBlock title="{!$Label.Case_Type_Search}">
+				<apex:pageBlockButtons location="top">
+					<apex:commandButton value="{!$Label.Search}" action="{!DoSearch}" reRender="idForm01" status="Searching" oncomplete="setFocus();"/>
+					<apex:commandButton value="{!$Label.Cancel}" reRender="idForm01" onclick="window.close()"/>
+				</apex:pageBlockButtons>
+				<apex:actionStatus startText="{!$Label.Searching}" id="Searching"/>
+				<apex:pageBlockSection columns="1">
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$Label.Search}"/>
+						<apex:inputText value="{!strSearch}" onkeypress="return noenter(event);"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value=""/>
+						<!-- <apex:outputText value="{!$Label.Search_Info}"/> -->
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+				<apex:pageBlockSection title="{!$Label.Search_Filters}" columns="2">
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$ObjectType.Case_Type__c.fields.name.label}"/>
+						<apex:inputCheckBox value="{!blnName}"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$ObjectType.Case_Type__c.fields.Theme__c.label}"/>
+						<apex:inputCheckBox value="{!blnTheme}"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$ObjectType.Case_Type__c.fields.Subcase_type__c.label}"/>
+						<apex:inputCheckBox value="{!blnType}"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$ObjectType.Case_Type__c.fields.Subcase_subtype__c.label}"/>
+						<apex:inputCheckBox value="{!blnSubType}"/>
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+				<apex:pageBlockSection title="{!$Label.Results}" columns="1">
+					<apex:pageBlockTable value="{!lstCaseType}" var="ct" width="100%">
+						<apex:column >
+							<apex:facet name="header">{!$ObjectType.Case_Type__c.fields.name.label}</apex:facet>
+							<apex:commandLink value="{!ct.name}" id="theCommandLink" onclick="top.window.opener.setCaseTypeInput( '{!ct.name}', '{!ct.id}' );top.window.close();"/>
+						</apex:column>
+						<apex:column value="{!ct.Subcase_type__c}"/>
+						<apex:column value="{!ct.Subcase_subtype__c}"/>
+						<apex:column value="{!ct.Theme__c}"/>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+			</apex:pageBlock>
+		</apex:form>
+	</body>
+</apex:page>

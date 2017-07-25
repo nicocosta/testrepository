@@ -1,0 +1,26 @@
+<apex:component >
+<apex:attribute name="Titulo" description="texto a mostrar" type="String" required="false"/>
+<apex:attribute name="Subtitulo" description="informacion adicional" type="String" required="false"/>
+<apex:attribute name="numeroImagen" description="Image type" type="String" required="true"/>  
+ <apex:stylesheet value="{!$Resource.estLoading}"/>
+
+
+
+                
+                    <div class="popupBackground" ></div>
+                    <div class="customPopup">
+                        <center>
+                            <br /><br /><br /><br />
+                            <apex:image value="{!URLFOR($Resource.loadingGif, numeroImagen +'.gif')}" rendered="{!IF(numeroImagen=='1' || numeroImagen=='3' ,true ,false)}" height="32" width="32"/>
+                            <apex:image value="{!URLFOR($Resource.loadingGif, numeroImagen +'.gif')}" rendered="{!IF(numeroImagen=='2',true ,false)}" height="22" width="126"/>
+                            <apex:image value="{!URLFOR($Resource.loadingGif, numeroImagen +'.gif')}" rendered="{!IF(numeroImagen=='4' || numeroImagen=='5' ,true ,false)}" height="16" width="16"/>
+                            <apex:image value="{!URLFOR($Resource.loadingGif, numeroImagen +'.gif')}" rendered="{!IF(numeroImagen=='6' || numeroImagen=='7' ,true ,false)}" height="100" width="100"/>
+                            <br /><br />
+                            <strong>{!Titulo}</strong>
+                            <br /><br />
+                            <strong>{!Subtitulo}</strong>
+                        </center>
+                    </div>
+                
+                
+</apex:component>

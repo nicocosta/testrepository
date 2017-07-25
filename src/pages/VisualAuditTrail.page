@@ -1,0 +1,38 @@
+<apex:page tabstyle="Account" controller="CtrVisualAuditTrail"
+	showHeader="false" sidebar="false" wizard="true">
+	<STYLE>
+BODY {
+	background-color: #F3F1EC;
+}
+</STYLE>
+	<apex:pageblock >
+		<apex:pageblocktable value="{!ListValues}" var="val">
+			<apex:column headerValue="{!$Label.Type}">
+				<apex:form >
+					<apex:commandLink value="{!val.regType}" reRender="nothing"
+						onclick="window.open('/{!val.regId}', 'width=800,height=800,location=no,dependent=no,resizable=yes,toolbar=no,status=no,directories=no,menubar=no,scrollbars=yes', false);">
+					</apex:commandLink>
+				</apex:form>
+			</apex:column>
+			<apex:column headerValue="{!$ObjectType.Safety_Individual_Report__History.fields.OldValue.label}">
+				<apex:outputText value="{!val.OldValue}" />
+			</apex:column>
+			<apex:column headerValue="{!$ObjectType.Safety_Individual_Report__History.fields.NewValue.label}">
+				<apex:outputText value="{!val.NewValue}" />
+			</apex:column>
+			<apex:column headerValue="{!$ObjectType.Safety_Individual_Report__History.fields.Field.label}">
+				<apex:outputText value="{!val.Field}" />
+			</apex:column>
+			<apex:column headerValue="{!$ObjectType.Safety_Individual_Report__History.fields.CreatedDate.label}">
+				<apex:outputText value="{!val.CreatedDate}" />
+			</apex:column>
+			<apex:column headerValue="{!$ObjectType.Safety_Individual_Report__History.fields.CreatedById.label}">
+				<apex:form >
+					<apex:commandLink value="{!val.CreatedByName}" reRender="nothing"
+						onclick="window.open('/{!val.CreatedById}', 'width=800,height=800,location=no,dependent=no,resizable=yes,toolbar=no,status=no,directories=no,menubar=no,scrollbars=yes', false);">
+					</apex:commandLink>
+				</apex:form>
+			</apex:column>
+		</apex:pageblocktable>
+	</apex:pageblock>
+</apex:page>

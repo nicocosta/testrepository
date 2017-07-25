@@ -1,0 +1,35 @@
+<apex:page standardController="Case_Mail_Response__c"
+	extensions="CaseMailResponse_ctr" action="{!URLAnalist}">
+	<apex:sectionHeader title="{!$ObjectType.Case_Mail_Response__c.Label}"
+		subtitle="{!Case_Mail_Response__c.Name}" />
+	<apex:form id="form1">
+		<apex:actionFunction name="quit" action="{!quit}" rerender="" />
+		<apex:pageBlock title="{!$ObjectType.Case_Mail_Response__c.Label}">
+			<apex:pageBlockSection columns="2">
+				<apex:outputField value="{!Case_Mail_Response__c.Name}" />
+				<apex:outputField value="{!Case_Mail_Response__c.Case__c}" />
+				<apex:outputField value="{!Case_Mail_Response__c.Sender__c}" />
+				<apex:outputField value="{!Case_Mail_Response__c.CreatedDate}" />
+				<apex:outputField value="{!Case_Mail_Response__c.LastModifiedDate}" />
+				<apex:outputField value="{!Case_Mail_Response__c.LastModifiedById}" />
+				<apex:outputField value="{!Case_Mail_Response__c.Message__c}"
+					rendered="false" />
+			</apex:pageBlockSection>
+			<!-- <apex:pageBlockSection columns="1"
+				Title="{!$ObjectType.Case_Mail_Response__c.fields.Message__c.label}">
+				<apex:iframe src="{!urlDoc}" height="400" width="100%"
+					scrolling="true" frameborder="true" />
+			</apex:pageBlockSection> -->
+			<apex:pageBlockSection columns="1" Title="{!$ObjectType.Case_Mail_Response__c.fields.Message__c.label}">
+				{!message}
+			</apex:pageBlockSection>
+			
+		</apex:pageBlock>
+	</apex:form>
+	<script>
+		window.onunload = unloadPage;
+		function unloadPage() {
+			quit();
+		}
+	</script>
+</apex:page>

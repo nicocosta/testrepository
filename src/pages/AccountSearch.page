@@ -1,0 +1,133 @@
+<apex:page controller="AccountSearch_ctr">
+	<apex:sectionHeader title="{!$Label.AccountSearchTitle}" />
+	<apex:form id="Form1">
+		<apex:actionFunction name="searchJS" action="{!search}"
+			reRender="Form1:Results" status="loadingStatus" />
+		<apex:pageBlock id="Results">
+			<apex:pageMessages id="messages1" />
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!search}" value="{!$Label.Search}"
+					id="searchButton"
+					rerender="Form1:PaginatorController,Form1:Results"
+					status="loadingStatus" />
+				<apex:commandButton value="{!$Label.NewPersonalAccount}"
+					action="{!newAccount}" onclick="removeSpecialChar();"
+					rendered="{!searched}" />
+				<apex:commandButton value="{!$Label.NewBusinessAccount}"
+					action="{!newAccountBusiness}" onclick="removeSpecialChar();"
+					rendered="{!searched}" />
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection Title="{!$Label.SearchParameters}">
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.ClientName}" />
+					<apex:inputText value="{!name}" onkeypress="return noenter(event);"
+						id="nameSearch" />
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.PhoneSearch}" />
+					<apex:inputText value="{!phone}"
+						onkeypress="return noenter(event);" />
+				</apex:pageBlockSectionItem>
+				<apex:actionStatus id="loadingStatus">
+					<apex:facet name="start">
+						<apex:outputLabel value="{!$Label.Searching}" />
+					</apex:facet>
+				</apex:actionStatus>
+			</apex:pageBlockSection>
+			<apex:pageBlockSection Title="{!$Label.Results}"
+				rendered="{!searched}" columns="1">
+				<apex:pageBlockTable value="{!wrappers}" var="a"
+					rendered="{!NOT(ISNULL(accounts))}" width="100%">
+					<apex:column >
+						<apex:outputLink value="{!selectUrl}{!a.Id}" target="_self">{!$Label.Select}</apex:outputLink>
+					</apex:column>
+					<apex:column >
+						<apex:outputLink value="{!editUrl}{!a.Id}" target="_self">{!$Label.Edit}</apex:outputLink>
+					</apex:column>
+					<apex:column headerValue="{!$ObjectType.Account.fields.Name.label}">
+						<apex:outputLink value="/{!a.Id}" target="_self">{!a.Name}</apex:outputLink>
+					</apex:column>
+					<apex:column headerValue="{!$Label.CPF_CNPJ}">
+						<apex:outputText value="{!a.AccountNumber}{!a.Person_identification_number_CPF__pc}" /> 
+					</apex:column>
+					<apex:column value="{!a.fMain_phone__c}" />
+					<apex:column value="{!a.State_Phone_1__c}" />
+					<apex:column value="{!a.Main_Phone_2__c}" />
+					<apex:column value="{!a.State_Phone_2__c}" />
+					<apex:column headerValue="{!$ObjectType.Account.fields.Type__c.label}">
+						<apex:outputText value="{!a.Type__c}" /> 
+					</apex:column>
+					<apex:column headerValue="{!$ObjectType.Account.fields.Occupation_Specialty__pc.label}">
+					 <apex:outputText value="{!a.Occupation_Specialty__pc}" />  
+					</apex:column>
+					<apex:column headerValue="{!$ObjectType.RecordType.label}">
+						<apex:outputField value="{!a.RecordType.Name}" />
+					</apex:column>
+				</apex:pageBlockTable>
+				<apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+					rendered="{!(ISNULL(accounts))}" styleClass="noRowsHeader"></apex:outputLabel>
+
+			</apex:pageBlockSection>
+
+			<apex:panelGrid columns="4" rendered="{!showControlsPaginator}"
+				id="PaginatorController">
+				<apex:commandLink action="{!first}"
+					rerender="Form1:PaginatorController,Form1:Results"
+					status="loadingStatus">{!$Label.First}</apex:commandlink>
+					<apex:commandLink action="{!previous}" rendered="{!hasPrevious}"
+						rerender="Form1:PaginatorController,Form1:Results"
+						status="loadingStatus">{!$Label.Previous}</apex:commandlink>
+						<apex:commandLink action="{!next}" rendered="{!hasNext}"
+							rerender="Form1:PaginatorController,Form1:Results"
+							status="loadingStatus">{!$Label.Next}</apex:commandlink>
+							<apex:commandLink action="{!last}"
+								rerender="Form1:PaginatorController,Form1:Results"
+								status="loadingStatus">{!$Label.Last}</apex:commandlink>
+			</apex:panelGrid>
+
+
+		</apex:pageBlock>
+
+
+
+	</apex:form>
+	<script>
+	function noenter(e) {
+		var key;
+		if (window.event) {
+			key = window.event.keyCode; //IE
+		} else {
+			key = e.which; //firefox
+		}
+		if (key == 13) {
+			searchJS();
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	function removeSpecialChar() {
+		var str="";
+		var obj;
+		var ptags=document.getElementsByTagName("input"); 
+		for(x in ptags){
+			if(ptags[x].id.indexOf("nameSearch")!=-1){
+				obj = ptags[x];
+				str = obj.value;
+				break;
+			}
+		}
+		var output="";
+		for(i=0; i<str.length; i++)
+		{
+			key = str.charCodeAt(i);
+			if (!((key < 48 || key > 57) && (key < 65 || key > 90) && (key < 97 || key > 122) && key!=32 && key!=45 && key!=95 && key!=8 && key!=0)) {
+				output+=str.charAt(i);
+			}
+		}
+		obj.value=output;
+		
+	}
+</script>
+</apex:page>

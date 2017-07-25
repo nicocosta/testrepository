@@ -1,0 +1,25 @@
+<apex:page controller="CreateChangeRequestWS_ctr">
+
+<script language='javascript' type='text/javascript'>
+    window.onload = function init() {
+    window.setTimeout(empezarProceso1, 200);
+    }
+    function cerrar()
+    {   
+        window.close();
+    }
+</script>
+<apex:form id="formulario">
+ <apex:actionFunction id="empezarProceso" name="empezarProceso1" action="{!sendWSPage}" rerender="idPM01" status="loadingStatus"/>
+        <apex:actionStatus id="loadingStatus">
+            <apex:facet name="start">   
+            <c:Loading Titulo="Processing..." Subtitulo="This process may take several minutes." numeroImagen="2"/>              
+            </apex:facet> 
+        </apex:actionStatus>
+<apex:pageBlock id="TestDires">
+<apex:pageMessages id="idPM01" showDetail="false"/>
+<apex:commandButton onclick="cerrar()" value="Close" id="btnActivate"/> 
+</apex:pageBlock>
+    </apex:form>
+
+</apex:page>

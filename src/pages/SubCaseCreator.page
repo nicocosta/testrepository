@@ -1,0 +1,419 @@
+<apex:page standardController="case" extensions="SubCaseCreator_ctr"
+    tabStyle="Case" id="idPage" action="{!URL_Analist}">
+     
+    <script>
+    function getCaseTypeInput() {
+        var CaseType = document
+                .getElementById('{!$Component.idPage.idForm01.idPB01.idPBS02.idPBSI01.idIT01}');
+        return CaseType.value
+    }
+    function setCaseTypeInput(caseTypeName, caseTypeId) {
+        var varCaseTypeName = document
+                .getElementById('{!$Component.idPage.idForm01.idPB01.idPBS02.idPBSI01.idIT01}');
+        var varCaseTypeId = document
+                .getElementById('{!$Component.idPage.idForm01.idPB01.idPBS02.idPBSI01.idIH01}');
+        varCaseTypeName.value = caseTypeName;
+        varCaseTypeId.value = caseTypeId;
+        updateCaseTypeInfo();
+    }
+    function saveAction(btn){
+        if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)){
+            btn.style.display='none';
+            return true;
+        }else{
+            btn.disabled = true;
+            btnSaveAction();
+        }
+    }
+    
+</script>
+    
+    <apex:sectionHeader title="{!$Label.Case_Edit}"
+        subtitle="{!strSubTitle} - Case {!case.CaseNumber}" />
+    <apex:outputText value="{!case.RecordType.Name}" rendered="false" />
+    <apex:outputText value="{!case.CaseNumber}" rendered="false" />
+    <apex:outputText value="{!case.Flow_Type__c}" rendered="false" />
+    <apex:outputField value="{!case.ContactId}" rendered="false" />
+    <apex:actionStatus startText="Saving... Please wait" id="Saving" />
+    <apex:form id="idForm01">
+
+    
+    <apex:actionFunction action="{!updateCase}" name="updateCaseInfo" rerender="idForm01:idPB01:idPBS00" status="loading">
+        <apex:param name="firstParam" assignTo="{!strIdSubcase}" value=""/>
+    </apex:actionFunction>
+    
+        <apex:pageBlock title="{!$Label.Case_Edit}" mode="edit" id="idPB01">
+            <apex:pageBlockButtons >
+                <apex:commandButton id="SaveAll" value="{!$Label.Save}"
+                    action="{!btnSave}" onclick="saveAction(this)"  />
+                <apex:commandButton action="{!Cancel}" value="{!$Label.Cancel}" />
+                <apex:actionFunction action="{!btnSave}" name="btnSaveAction" />
+            </apex:pageBlockButtons>
+            <apex:pageMessages showDetail="false" id="idMessages" />
+            <apex:pageBlockSection title="{!$Label.SubCase_Information}"
+                columns="2" id="idPBS01">
+                <apex:inputField value="{!case.ParentId}" required="true"
+                    rendered="{!inputParentId}" />
+                <apex:inputField value="{!case.Patient_Name__c}"
+                    rendered="{!showPatient}" />
+
+                <apex:outputText rendered="{!NOT(showPatient)}" />
+                <apex:inputField value="{!case.AccountId}"
+                    rendered="{!renderAccount }" />
+
+                <apex:inputField value="{!case.Media__c}" />
+                <apex:inputField value="{!case.ContactId}" required="true" />
+                <apex:inputField value="{!case.FV_Analyst_Responsible__c}" />
+            </apex:pageBlockSection>
+            <!-- ahora lo dejo como estaba
+            <apex:pageBlockSection title="Subcasos relacionados" columns="1" id="idPBS00">
+                
+                <apex:pageBlockTable value="{!lst_wrp}" var="wrp">
+                
+                <apex:column headerValue="{!$Label.SubcaseNumeroSubcaso}">
+                
+                    
+                        <apex:inputText value="{!wrp.strSubcaseName}" disabled="{!wrp.blnDisabled}" size="10"/>
+                            <apex:commandLink reRender="nothing"                            
+                                onclick="window.open('/apex/LookupReference?type=Subcase', '_blank', 'width=800,height=800,location=no,dependent=no,resizable=yes,toolbar=no,status=no,directories=no,menubar=no,scrollbars=yes', false);" rendered="true"><img Id="ImageCaseTypeName" src="/s.gif" alt="Case Type Lookup (New Window)" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" title="Case Type Lookup (New Window)"></img>
+                            </apex:commandLink> 
+                   
+                
+                </apex:column>
+                
+                <apex:column headerValue="{!$Label.SubcaseTipoSubcaso}">
+                    <apex:outputPanel styleClass="boldreq" >
+                        <apex:inputText value="{!wrp.strSubcaseType}" disabled="{!wrp.blnDisabled}" />
+                    </apex:outputPanel>
+                </apex:column>
+                
+                <apex:column headerValue="{!$Label.SubcaseNumeroArgus}">
+                    <apex:outputPanel styleClass="boldreq" >                        
+                        <apex:inputText value="{!wrp.strSystemNumber}" disabled="{!wrp.blnDisabled}"/>
+                    </apex:outputPanel> 
+                </apex:column>
+                
+                <apex:column headerValue="{!$Label.SubcaseNumeroDocumentazao}">
+                    <apex:outputPanel styleClass="boldreq" >
+                        <apex:inputText value="{!wrp.strRTNumberDocumentation}" disabled="{!wrp.blnDisabled}"/>
+                    </apex:outputPanel>
+                </apex:column>
+                
+                <apex:column headerValue="{!$Label.SubcaseAmostraReclamada}">
+                    <apex:outputPanel styleClass="boldreq" >
+                        <apex:inputText value="{!wrp.strRTNumberSample}" disabled="{!wrp.blnDisabled}"/>
+                    </apex:outputPanel>
+                </apex:column>
+                
+                
+                <apex:column headerValue="Ação">
+                    <apex:commandButton value="x" action="{!removerSubcasoRelacionado}" style="color:red" rendered="{!showRemoveBttn}" reRender="idForm01:idPB01:idPBS00">
+                        <apex:param name="idRemove" value="{!wrp.posicion}" assignTo="{!indiceLista}"/>
+                    </apex:commandButton>
+                </apex:column>
+                </apex:pageBlockTable>
+                 
+                <apex:commandButton value="Agregar subcaso relacionado" action="{!agregarSubcasoRelacionado}" rerender="idForm01:idPB01:idPBS00"/>
+            </apex:pageBlockSection> -->
+            
+                    
+                
+            
+            <apex:pageBlockSection title="{!$Label.Case_Type_Information}"
+                columns="1" id="idPBS02">
+                <apex:pageBlockSectionItem id="idPBSI01">
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.Case_Type__c.label}" />
+                    <apex:outputPanel >
+                        <apex:outputText value="{!strCaseTypeName}" id="idIT01" />
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                        <apex:commandLink reRender="nothing"
+                            
+                            onclick="window.open('/apex/LookupPage?src=', '_blank', 'width=800,height=800,location=no,dependent=no,resizable=yes,toolbar=no,status=no,directories=no,menubar=no,scrollbars=yes', false);" 
+                            rendered="{!blnIsNotCreated}">
+                            <img Id="ImageCaseTypeName" src="/s.gif"
+                                alt="Case Type Lookup (New Window)" class="lookupIcon"
+                                onblur="this.className = 'lookupIcon';"
+                                onfocus="this.className = 'lookupIconOn';"
+                                onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';"
+                                onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+                                title="Case Type Lookup (New Window)"></img>
+                        </apex:commandLink></div>
+                        <apex:inputHidden value="{!SubCase.Case_Type__c}" id="idIH01" />
+                        <apex:actionFunction action="{!updateCaseTypeInfo}"
+                            name="updateCaseTypeInfo" rerender="idForm01"
+                            status="loadingCaseTypeInfo" />
+                        <apex:actionStatus startText="{!$Label.Loading_CaseType}"
+                            id="loadingCaseTypeInfo" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:outputField value="{!CaseType.Scenario__c}" />
+                <apex:outputField value="{!CaseType.Script__c}" />
+                
+                <!--inicio puso nico despues saca-->
+            </apex:pageBlockSection>
+                        <apex:pageBlockSection title="Subcasos relacionados" columns="1" id="idPBS00">                
+                
+                <apex:pageBlockTable value="{!lst_wrp}" var="wrp">                
+                <apex:column headerValue="{!$Label.SubcaseNumeroSubcaso}">                                    
+                        <apex:inputText value="{!wrp.strSubcaseName}" disabled="{!wrp.blnDisabled}" size="10"/>
+                            <apex:commandLink reRender="nothing"                            
+                                onclick="window.open('/apex/LookupReference?type=Subcase', '_blank', 'width=800,height=800,location=no,dependent=no,resizable=yes,toolbar=no,status=no,directories=no,menubar=no,scrollbars=yes', false);" rendered="true"><img Id="ImageCaseTypeName" src="/s.gif" alt="Case Type Lookup (New Window)" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" title="Case Type Lookup (New Window)"></img>
+                            </apex:commandLink>                                 
+                </apex:column>
+                
+                <apex:column headerValue="{!$Label.SubcaseTipoSubcaso}">
+                    <apex:outputPanel styleClass="boldreq" >
+                        <apex:inputText value="{!wrp.strSubcaseType}" disabled="{!wrp.blnDisabled}" />
+                    </apex:outputPanel>
+                </apex:column>
+                
+                <apex:column headerValue="{!$Label.SubcaseNumeroArgus}">
+                    <apex:outputPanel styleClass="boldreq" >                        
+                        <apex:inputText value="{!wrp.strSystemNumber}" disabled="{!wrp.blnDisabled}"/>
+                    </apex:outputPanel> 
+                </apex:column>
+                
+                <apex:column headerValue="{!$Label.SubcaseNumeroDocumentazao}">
+                    <apex:outputPanel styleClass="boldreq" >
+                        <apex:inputText value="{!wrp.strRTNumberDocumentation}" disabled="{!wrp.blnDisabled}"/>
+                    </apex:outputPanel>
+                </apex:column>
+                
+                <apex:column headerValue="{!$Label.SubcaseAmostraReclamada}">
+                    <apex:outputPanel styleClass="boldreq" >
+                        <apex:inputText value="{!wrp.strRTNumberSample}" disabled="{!wrp.blnDisabled}"/>
+                    </apex:outputPanel>
+                </apex:column>
+                                
+                <apex:column headerValue="Ação">
+                    <apex:commandButton value="x" action="{!removerSubcasoRelacionado}" style="color:red" rendered="{!showRemoveBttn}" reRender="idForm01:idPB01:idPBS00">
+                        <apex:param name="idRemove" value="{!wrp.posicion}" assignTo="{!indiceLista}"/>
+                    </apex:commandButton>
+                </apex:column>
+                </apex:pageBlockTable>
+                 
+                <apex:commandButton value="Agregar subcaso relacionado" action="{!agregarSubcasoRelacionado}" rerender="idForm01:idPB01:idPBS00"/>
+            </apex:pageBlockSection>
+                <!--fin puso nico despues saca-->
+            <apex:pageBlockSection title="{!$Label.Additional_Information}"
+                columns="2" id="idPBS03">
+                <apex:inputField value="{!case.Do_you_want_to_receive_an_email_response__c}" />
+                <apex:outputField value="{!case.Origin}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.Flow_Type__c.Label}" />
+                    <apex:outputPanel >
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                        <apex:selectList id="FlowType" value="{!strFlowTypeName}"
+                            multiselect="false" size="1"
+                            disabled="{!Case.Case_Type__c==null || !blnIsNotCreated}" required="false">
+                            <apex:selectOptions value="{!lstFlows}" />
+                                                        <!-- grey@17/08/2012 Change Control for auto asign reimbursement... -->                                                   
+                                <apex:actionSupport event="onchange" rerender="idPage:idForm01" action="{!autoAsignReimbursement}"/>
+                        </apex:selectList>
+                        <div class="mouseOverInfoOuter" onfocus="addMouseOver(this)"
+                            onmouseover="addMouseOver(this)"><img src="/s.gif" alt=""
+                            class="infoIcon" title=""></img>
+                        <div class="mouseOverInfo" style="display: none; opacity: 0;">
+                        Depends on "Case Type"</div>
+                        </div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!case.Status}" required="true" />                                  
+                <apex:inputField value="{!case.Non_attendance_reason__c}" />
+                <apex:inputField value="{!case.Receipt_date_of_report__c}" required="false"/><!-- Field Req on 17/7/2012 -->
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Description_Information}"
+                columns="1" id="idPBS04">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.Subcase_Description__c.label}" />
+                    <apex:inputField value="{!case.Subcase_Description__c}"
+                        style="width:400px;Height:100px;" />
+                </apex:pageBlockSectionItem>
+                <apex:outputText />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.Subcase_Solution_Description__c.label}" />
+                    <apex:inputField value="{!case.Subcase_Solution_Description__c}"
+                        style="width:400px;Height:100px;" />
+                </apex:pageBlockSectionItem>
+                <apex:outputText />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Request_Assistance_Other_Areas}" columns="1"
+                id="idPBS04_1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.Answer_Task__c.label}" />
+                    <apex:inputField value="{!case.Answer_Task__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.FV_SubcaseType_Revalidation}" columns="2" rendered="{!ShowRevalidation}" id="idFVVal">
+                <apex:inputField value="{!case.Classification__c}" />
+                <apex:inputField value="{!case.Report_Full_LOE_Criteria_for_RT__c}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.PV_EVALUATION__c.label}" />
+                    <apex:inputField value="{!case.PV_EVALUATION__c}" style="width:400px;Height:100px;" />                    
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!case.Do_Not_Report_Full_LOE_Criteria_for_RT__c}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.QA_EVALUATION__c.label}" />
+                    <apex:inputField value="{!case.QA_EVALUATION__c}" style="width:400px;Height:100px;" />                    
+                </apex:pageBlockSectionItem>                
+            </apex:pageBlockSection>
+            <apex:actionRegion >
+                <apex:pageBlockSection title="{!$Label.Product_Information}"
+                    columns="2" id="idPBS05">
+                    <apex:inputField value="{!case.Product__c}">
+                        <apex:actionSupport event="onchange" action="{!searchFAQProduct}"
+                            rerender="idPage:idForm01:idPB01:FAQPanel" status="loadingFAQ">
+                        </apex:actionSupport>
+                    </apex:inputField>
+                    <apex:inputField value="{!case.Product_Batch_number__c}" />
+                    <apex:inputField value="{!case.Manufacture_Date_Day__c}" />
+                    <apex:inputField value="{!case.Expire_Date_Day__c}" />
+                    <apex:inputField value="{!case.Manufacture_Date_Month__c}" />
+                    <apex:inputField value="{!case.Expire_Date_Month__c}" />
+                    <apex:inputField value="{!case.Manufacture_Date_Year__c}" />
+                    <apex:inputField value="{!case.Expire_Date_Year__c}" />
+                    <apex:inputField value="{!case.Clinical_Trial__c}"> 
+                    </apex:inputField>
+                    <apex:pageBlockSectionItem />
+                </apex:pageBlockSection>
+                <apex:actionStatus id="loadingFAQ">
+                    <apex:facet name="start">
+                        <apex:outputLabel value="{!$Label.Loading}" />
+                    </apex:facet>
+                </apex:actionStatus>
+                <apex:outputPanel id="FAQPanel">
+                    <Div class="hidden"><apex:pageBlockSection title="dummy"
+                        columns="1" rendered="{!blnFAQPanel}" collapsible="false">
+                    </apex:pageBlockSection></Div>
+                    <apex:pageBlockSection title="{!$Label.SubCaseFAQ}" columns="1"
+                        id="idPBS06a" rendered="{!blnFAQPanel}" collapsible="false">
+                        <apex:pageBlockTable value="{!lstFAQ}" var="m">
+                            <apex:column value="{!m.Name}" />
+                            <apex:column headerValue="{!$ObjectType.FAQxProduct__c.fields.FAQ_title__c.label}">
+                                <apex:outputLink value="{!host}{!m.FAQ_title__c}"
+                                    target="_blank">{!m.FAQ_title__r.Name}</apex:outputLink>
+                            </apex:column>
+                            <apex:column value="{!m.FAQ_key_words__c}" />
+                            <apex:column value="{!m.FAQ_Summary__c}" />
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>
+                    <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                        rendered="{!AND(ISNULL(lstFAQ),blnFAQPanel)}"
+                        styleClass="noRowsHeader" />
+                </apex:outputPanel>
+           
+            </apex:actionRegion>
+            <apex:pageBlockSection title="{!$Label.Technical_Complaint}"
+                columns="2" rendered="{!showComplaint}" id="idPBS06">
+                <apex:inputField value="{!case.Number_of_complained_packages__c}" />
+                <apex:inputField value="{!case.Invoice_number__c}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.Reimbursement_via__c.label}" />
+                    
+                    <!-- grey@17/08/2012 Change Control for auto assign reimbursement... -->                    
+                    <apex:outputPanel >                        
+                       <apex:panelGrid columns="1" rendered="{!isVisibleReimbursement}">
+                        <apex:outputLabel value="{!case.Reimbursement_via__c}" />
+                        <apex:actionFunction action="{!updatePage}" name="updatePage"
+                            rerender="idForm01" status="loadingReimbursment" />
+                        <apex:actionStatus startText="{!$Label.Loading_Reimbursement}"
+                            id="loadingReimbursment" />                       
+                       </apex:panelGrid> 
+                                        
+                       <apex:panelGrid columns="1" rendered="{!isVisibleAutoReimbursement}">                             
+                        <apex:outputText value="{!autoReimbursementValue}"/>
+                        <apex:actionFunction action="{!updatePage}" name="updatePage"
+                            rerender="idForm01" status="loadingReimbursment" />
+                        <apex:actionStatus startText="{!$Label.Loading_Reimbursement}"
+                            id="loadingAutoReimbursment" />                       
+                       </apex:panelGrid> 
+                        
+                    </apex:outputPanel>
+                                                     
+
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!case.Reimbursement_value__c}" />
+                <apex:inputField value="{!case.Do_you_want_to_receive_the_analysis__c}" />
+                <apex:outputText />
+                
+                <apex:pageBlockSectionItem >
+                   <apex:outputLabel value="O cliente foi informado de que a reclamação foi recebida e será investigada?" />
+                   <apex:inputField value="{!case.complaint_was_received__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!case.Justification__c}" /> 
+             
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Analysis_Data}" columns="2"
+                rendered="{!showComplaint}" id="idPBS07">
+                <apex:inputField value="{!case.QC_number_Technical_Claim_Number__c}" />
+                <apex:inputField value="{!case.Complaint_Response__c}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.Complaint_investigation_results__c.label}" />
+                    <apex:inputTextArea value="{!case.Complaint_investigation_results__c}" cols="70"
+                        rows="4"
+                        disabled="{!NOT($ObjectType.Case.fields.Complaint_investigation_results__c.updateable)}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <!-- grey@ Análisis Data Sample --> 
+            <apex:pageBlockSection title="{!$Label.Analysis_Data_Sample} " columns="2"
+                rendered="{!showComplaint}" id="idPBS077">
+                <apex:inputField value="{!case.QC_number_Technical_Claim_Number_sample__c}" />
+                <apex:inputField value="{!case.Complaint_response_sample__c}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.Complaint_investigation_results_sample__c.label}" />
+                    <apex:inputTextArea value="{!case.Complaint_investigation_results_sample__c}" cols="70"
+                        rows="4"
+                        disabled="{!NOT($ObjectType.Case.fields.Complaint_investigation_results__c.updateable)}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="{!$Label.Reimbursement_Data}"
+                columns="2" rendered="{!showReimbursment}" id="idPBS08">
+                <apex:inputField value="{!case.Copy_data_from_client__c}" />
+                <apex:inputField value="{!case.Bank_Name__c}" />
+                <apex:inputField value="{!case.Bank_Account_Name__c}" />
+                <apex:inputField value="{!case.Agency_number__c}" />
+                <apex:inputField value="{!case.Person_identification_number_CPF__c}" />
+                <apex:inputField value="{!case.Bank_Account_number__c}" />
+                <apex:inputField value="{!case.Phone__c}" />
+                <apex:inputField value="{!case.Address__c}" />
+                <apex:inputField value="{!case.Price__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.Technical_Request}"
+                columns="2" rendered="{!showRequest}" id="idPBS09">
+                <apex:inputField value="{!case.Technical_Request_Type__c}" />
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Case.fields.Subcase_Solution_Description__c.label}" />
+                    <apex:outputPanel >
+                        <apex:inputField value="{!case.Technical_Request_subtype__c}" />
+                        <div class="mouseOverInfoOuter" onfocus="addMouseOver(this)"
+                            onmouseover="addMouseOver(this)"><img src="/s.gif" alt=""
+                            class="infoIcon" title=""></img>
+                        <div class="mouseOverInfo" style="display: none; opacity: 0;">
+                        Depends on "Technical Request Type"</div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+              
+               <apex:inputField value="{!case.Request_Numbers__c}" />
+               
+           
+    
+            </apex:pageBlockSection>
+            <!-- </apex:outputPanel> -->
+        </apex:pageBlock>
+
+    </apex:form>
+<!-- ahora lo saco    <script>
+
+    function setCaseInput( SubcaseId )
+    {   
+        updateCaseInfo( SubcaseId );
+    }  
+    </script>-->
+</apex:page>

@@ -1,0 +1,315 @@
+<apex:page standardController="Safety_Individual_Report__c"
+    extensions="SIRDisplay_ctr">
+    <apex:sectionHeader title="{!$ObjectType.Safety_Individual_Report__c.Label}"
+        subtitle="{!Safety_Individual_Report__c.Name}" printUrl="/apex/SIRDisplay_PDF?id={!Safety_Individual_Report__c.Id}"/>
+    <apex:form >
+        <apex:pageBlock title="{!$Label.SafetyIndividualReportDetailTitleSection}">
+
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!myEdit}" value="{!$Label.site.edit}" />
+                <apex:commandButton action="{!delete}" value="{!$Label.Delete}" />
+                <apex:commandButton action="{!clone}" value="{!$Label.Clone}" />                 
+            </apex:pageBlockButtons>
+            <apex:pageMessages id="messages1" />
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Name.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Name}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Migration_Id__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Migration_Id__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Client_Name__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Client_Name__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:outputField value="{!Safety_Individual_Report__c.Client_Name_Frozen__c}" />
+                <apex:outputField value="{!Safety_Individual_Report__c.Client_Profession_Frozen__c}" /> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Hospitalized__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Hospitalized__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Subcase_Number__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="{!$ObjectType.Safety_Individual_Report__c.fields.Duration__c.inlineHelpText}">
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Duration__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Duration__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Case_Subcase_Number__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Case_Subcase_Number__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Cause__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Cause__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.PV_system_number_Sina__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.PV_system_number_Sina__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="{!$ObjectType.Safety_Individual_Report__c.fields.Receipt_date_of_report__c.inlineHelpText}">
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Receipt_date_of_report__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Receipt_date_of_report__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Affiliate_date__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Affiliate_date__c}" />
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.PatientDataTitleSection}"
+                columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Patient_Name__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Patient_Name__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:outputField value="{!Safety_Individual_Report__c.Patient_Name_Frozen__c}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Patient_Birthdate_Frozen__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Patient_Birthdate_Frozen__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Patient_Gender_Frozen__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Patient_Gender_Frozen__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Age__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Age__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Height__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Height__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Weight__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Weight__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$ObjectType.Reporter__c.LabelPlural}" columns="1">
+                <apex:pageBlockTable value="{!reporters}" var="r"
+                    rendered="{!NOT(ISNULL(reporters))}">
+                    <apex:column headerValue="{!$ObjectType.Reporter__c.Label}">
+                        <apex:outputLink value="{!host}{!r.Id}">{!r.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column value="{!r.Reporter_related_name__c}" />
+                    <apex:column value="{!r.Reporter_Name_Frozen__c}" />
+                    <apex:column value="{!r.Reporter_Profession_Frozen__c}" />
+                    <apex:column value="{!r.CreatedDate}" />
+                </apex:pageBlockTable>
+                <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                    rendered="{!(ISNULL(reporters))}" styleClass="noRowsHeader"></apex:outputLabel>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.RelatedMedicalHistoryTitleSection}" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Related_medical_history__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Related_medical_history__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.SecondLevelSICTitleSection}">
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Subcase_Description__c}" />
+                <apex:pageBlockSectionItem />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Second_level_description__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Second_level_description__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Measures_taken__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Measures_taken__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="{!$ObjectType.Safety_Individual_Report__c.fields.Reporter_allow_us_to_share_the_data__c.inlineHelpText}">
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Reporter_allow_us_to_share_the_data__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Reporter_allow_us_to_share_the_data__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.ProductInformationTitleSection}">
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Product__c}" /> 
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Product_Batch_number__c}" />
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Manufacture_Date_Day__c}" />
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Expire_Date_Day__c}" />
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Manufacture_Date_Month__c}" />
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Expire_Date_Month__c}" />
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Manufacture_Date_Year__c}" />
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Expire_Date_Year__c}" />
+                <apex:outputField value="{!Safety_Individual_Report__c.Subcase_Number__r.Clinical_Trial__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$ObjectType.Medicines_in_use__c.LabelPlural}" columns="1">
+                <apex:pageBlockTable value="{!medicinesInUse}" var="m"
+                    rendered="{!NOT(ISNULL(medicinesInUse))}">
+                    <!--  <apex:column headerValue="{!$ObjectType.Medicines_in_use__c.Label}">
+                        <apex:outputLink value="{!host}{!m.Id}">{!m.Id}</apex:outputLink>
+                    </apex:column>  -->
+
+                    <apex:column value="{!m.Novartis_Product_Name__c}" />
+                    <apex:column value="{!m.Product_from_other_labs__c}" />
+                    <apex:column value="{!m.Administration_route__c}" />
+                    <apex:column value="{!m.Indication__c}" />
+                    <apex:column value="{!m.Posology__c}" />
+                    <apex:column value="{!m.Batch_Number__c}" />
+                    <apex:column value="{!m.Ongoing__c}" />
+                    <apex:column value="{!m.End_Date__c}" />
+                    <apex:column value="{!m.Suspect_Products__c}" />
+                </apex:pageBlockTable>
+                <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                    rendered="{!(ISNULL(medicinesInUse))}" styleClass="noRowsHeader"></apex:outputLabel>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$ObjectType.Adverse_Event__c.LabelPlural}" columns="1">
+                <apex:pageBlockTable value="{!adverseEvents}" var="a"
+                    rendered="{!NOT(ISNULL(adverseEvents))}">
+                    <apex:column headerValue="{!$ObjectType.Adverse_Event__c.Label}">
+                        <apex:outputLink value="{!host}{!a.Id}">{!a.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column value="{!a.Start__c}" />
+                    <apex:column value="{!a.Event_Seriousness__c}" />
+                    <apex:column value="{!a.Evolution__c}" />
+                </apex:pageBlockTable>
+                <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                    rendered="{!(ISNULL(adverseEvents))}" styleClass="noRowsHeader"></apex:outputLabel>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.ClinicalSafetyTitleSection}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.PV_description__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.PV_description__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Subcase_seriousness__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Subcase_seriousness__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Maxim_Duration_hours__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Maxim_Duration_hours__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Max_duration_last_modified_date__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Max_duration_last_modified_date__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="{!$Label.ResponsiblePhysicianTitleSection}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Responsible_physician_name__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Responsible_physician_name__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem helpText="{!$ObjectType.Safety_Individual_Report__c.fields.Reporter_allow_us_to_contact_physician__c.inlineHelpText}">
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.Reporter_allow_us_to_contact_physician__c.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.Reporter_allow_us_to_contact_physician__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="{!$Label.SystemInformationTitleSection}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.CreatedById.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.CreatedById}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.CreatedDate.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.CreatedDate}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.LastModifiedById.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.LastModifiedById }" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Safety_Individual_Report__c.fields.LastModifiedDate.label}" />
+                    <apex:outputField value="{!Safety_Individual_Report__c.LastModifiedDate }" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="{!$Label.History}" columns="1">
+                <apex:iframe src="VisualAuditTrail?id={!Safety_Individual_Report__c.id}"
+                    scrolling="true" height="300px" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+
+
+        <apex:pageBlock title="{!$Label.NotesAndAttachmentsSIRSection}">
+            <apex:pageBlockButtons location="top">
+                <input class="btn" type="button"
+                    onclick="navigateToUrl('{!newNote}',null,'newNote');"
+                    value="{!$Label.NewNote}" />
+                <input class="btn" type="button"
+                    onclick="navigateToUrl('{!newAttch}',null,'attachFile');"
+                    value="{!$Label.AttachFile}" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!notesAndAttachmentLst}" var="t"
+                rendered="{!AND(showAttachments,NOT(ISNULL(notesAndAttachmentLst)))}"
+                width="100%">
+                <apex:column headerValue="{!$Label.Action}">
+                    <apex:outputLink value="{!host}{!t.identifier}{!edit}">{!$Label.site.edit}</apex:outputLink>
+                    <apex:outputLabel value=" | " rendered="{!t.isAttachment}" />
+                    <apex:outputLink value="{!view}{!t.identifier}" target="_blank"
+                        rendered="{!t.isAttachment}">{!$Label.View}</apex:outputLink>
+                    <!--  <apex:outputLabel value=" | " />
+                    <apex:commandLink action="{!deleteNotesAndAttachment}"
+                        value="{!$Label.Delete}"
+                        onclick="return confirm('Are you sure?');">
+                        <apex:param name="deleteId" assignTo="{!deleteId}"
+                            value="{!t.identifier}" />
+                    </apex:commandLink>-->
+                </apex:column>
+                <apex:column headerValue="{!$Label.Type}">
+                    <apex:outputLabel value="{!IF (t.isAttachment,$ObjectType.Attachment.Label,$ObjectType.Note.Label)}" />
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.NoteAndAttachment.fields.Title.label}">
+                    <apex:outputLink value="{!host}{!t.identifier}">{!t.title}</apex:outputLink>
+                </apex:column>
+                <apex:column value="{!t.lastModifiedDate}"
+                    headerValue="{!$ObjectType.NoteAndAttachment.fields.LastModifiedDate.label}" />
+                <apex:column headerValue="{!$ObjectType.NoteAndAttachment.fields.CreatedById.label}">
+                    <apex:outputLink value="{!host}{!t.createdId}">{!t.createdName}</apex:outputLink>
+                </apex:column>
+            </apex:pageBlockTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!ISNULL(notesAndAttachmentLst)}"
+                styleClass="noRowsHeader"></apex:outputLabel>
+        </apex:pageBlock>
+
+        <apex:pageBlock title="{!$Label.CaseAttachmentsSectionTitle}">
+            <apex:pageBlockTable value="{!caseAttachments}" var="t"
+                rendered="{!NOT(ISNULL(caseAttachments))}" width="100%">
+                <apex:column headerValue="{!$Label.Action}">
+                    <apex:outputLink value="{!host}{!t.identifier}{!editComm}">{!$Label.site.edit}</apex:outputLink>
+                    <apex:outputLabel value=" | " rendered="{!t.isAttachment}" />
+                    <apex:outputLink value="{!view}{!t.identifier}" target="_blank"
+                        rendered="{!t.isAttachment}">{!$Label.View}</apex:outputLink>
+                    <!--  <apex:outputLabel value=" | " />
+                    <apex:commandLink action="{!deleteNotesAndAttachment}"
+                        value="{!$Label.Delete}"
+                        onclick="return confirm('Are you sure?');">
+                        <apex:param name="deleteId" assignTo="{!deleteId}"
+                            value="{!t.identifier}" />
+                    </apex:commandLink>-->
+                </apex:column>
+                <apex:column headerValue="{!$Label.Type}">
+                    <apex:outputLabel value="{!IF (t.isAttachment,$ObjectType.Attachment.Label,$ObjectType.CaseComment.Label)}" />
+                </apex:column>
+                <apex:column headerValue="{!$ObjectType.NoteAndAttachment.fields.Title.label}">
+                    <apex:outputLink value="{!host}{!t.identifier}" rendered="{!t.isAttachment}">{!t.title}</apex:outputLink>
+                    <apex:outputLabel value="{!t.title}" rendered="{!NOT(t.isAttachment)}"/>
+                </apex:column>
+                <apex:column value="{!t.lastModifiedDate}"
+                    headerValue="{!$ObjectType.NoteAndAttachment.fields.LastModifiedDate.label}" />
+                <apex:column headerValue="{!$ObjectType.NoteAndAttachment.fields.CreatedById.label}">
+                    <apex:outputLink value="{!host}{!t.createdId}">{!t.createdName}</apex:outputLink>
+                </apex:column>
+            </apex:pageBlockTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!ISNULL(caseAttachments)}" styleClass="noRowsHeader"></apex:outputLabel>
+        </apex:pageBlock>
+
+    </apex:form>
+
+    <!--  <apex:relatedList list="NotesAndAttachments"
+        rendered="{!showAttachments}" /> -->
+
+</apex:page>

@@ -1,0 +1,30 @@
+<apex:component > 
+
+	<apex:attribute name="validated" description="If is not validated don't display error message" type="boolean" />
+    <apex:attribute name="Value" description="This is the Value" type="string" required="true" />
+    <apex:attribute name="size" description="This is the inputtext size" type="string" default="75" />
+    <apex:attribute name="OnBlur" description="This is the textfield onblur" type="string"  />
+    <apex:attribute name="onchange" description="This is the textfield onchange" type="string" />
+    <apex:attribute name="onclick" description="This is the textfield onclick" type="string" />
+    <apex:attribute name="ondblclick" description="This is the textfieldondblclick" type="string"  />
+    <apex:attribute name="onfocus" description="This is the textfield onfocus" type="string"  />
+    <apex:attribute name="onkeydown" description="This is the textfield onkeydown" type="string"  />
+    <apex:attribute name="onkeypress" description="This is the textfield onkeypress" type="string"  />
+    <apex:attribute name="onkeyup" description="This is the textfield onkeyup" type="string"  />
+    <apex:attribute name="onmousedown" description="This is the textfield onmousedown" type="string"  />
+    <apex:attribute name="onmousemove" description="This is the textfield onmousemove" type="string"  />
+    <apex:attribute name="onmouseout" description="This is the textfield onmouseout" type="string"  />
+    <apex:attribute name="onmouseover" description="This is the textfield onmouseover" type="string"  />
+    <apex:attribute name="onmouseup" description="This is the textfield onmouseup" type="string"  />
+    <apex:attribute name="rendered" description="This is the component rendered" type="string" default="true" />
+
+
+<apex:outputPanel styleClass="requiredInput" layout="block" rendered="{!rendered}">
+    <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+           <apex:inputtext value="{!Value}" onmouseup="{!onmouseup}" onmouseover="{!onmouseover}" onblur="{!onblur}" onmouseout="{!onmouseout}" onmousemove="{!onmousemove}" onmousedown="{!onmousedown}" onkeyup="{!onkeyup}" onkeypress="{!onkeypress}" onkeydown="{!onkeydown}" onfocus="{!onfocus}" onchange="{!onchange}" ondblclick="{!ondblclick}" onclick="{!onclick}"   style="{!if(AND(Value = null,validated), 'border-size:2px; border-color:red;border-style:solid;', '')}"/>
+     <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!AND(if(Value = null, true, false),validated)}">
+            <strong>Error:</strong> You must enter a value
+     </apex:outputPanel>
+</apex:outputPanel>
+
+</apex:component>

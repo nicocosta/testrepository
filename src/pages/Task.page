@@ -1,0 +1,160 @@
+<apex:page id="idPage" standardController="Task" extensions="Task_ctr">
+<script>
+function checkLimit(limitField, limitCount, limitNum)
+{
+    if (limitField.value.length > limitNum) {
+        limitField.value = limitField.value.substring(0, limitNum);
+    } else {
+        limitCount.value = limitNum - limitField.value.length;
+    }
+}
+</script>
+
+    <apex:sectionHeader title="{!$ObjectType.Task.Label}" />
+    
+    <apex:actionStatus id="loading">
+            <apex:facet name="start">
+            <c:Loading Titulo="{!$Label.Label_Processing}" Subtitulo="{!$Label.Label_Wait}" numeroImagen="2"/>              
+            </apex:facet>
+        </apex:actionStatus>
+ 
+    <apex:form id="form1">
+    
+        <apex:actionFunction action="{!updateGroup}" name="updateGroupInfo" rerender="form1" status="loading">
+        <apex:param name="firstParam" assignTo="{!strGroupId}" value=""/>
+        </apex:actionFunction>    
+    
+        <apex:pageBlock id="idPB01">
+        
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!btnSave}" value="{!$Label.site.save}" />
+                <apex:commandButton action="{!Cancel}" value="{!$Label.site.cancel}" />
+            </apex:pageBlockButtons>
+            <apex:pageMessages id="messages" />
+                
+            <apex:pageBlockSection columns="2" title="{!$Label.Task_Information_Title}" id="idPBS01">
+                <!--apex:inputField value="{!Task.OwnerId}" required="false"/-->
+                                
+                <apex:pageBlockSectionItem id="idPBSI01" rendered="true">
+                    <apex:outputLabel value="{!$ObjectType.Group__c.fields.Name.label}" />
+                    <apex:outputPanel id="idOP01">
+                                      
+                        <apex:inputText value="{!strGroupName}" />
+                        <apex:commandLink reRender="nothing"                            
+                            onclick="window.open('/apex/LookupReference?type=Group', '_blank', 'width=800,height=800,location=no,dependent=no,resizable=yes,toolbar=no,status=no,directories=no,menubar=no,scrollbars=yes', false);" rendered="true"><img Id="ImageCaseTypeName" src="/s.gif" alt="Case Type Lookup (New Window)" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" title="Case Type Lookup (New Window)"></img>
+                        </apex:commandLink>                      
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!Task.WhatId}" />
+                
+                <apex:pageBlockSectionItem id="idPBSI02">
+                    <apex:outputLabel value="{!$ObjectType.Task.fields.Subject.label}"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block" rendered="true">
+                    <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                        <apex:inputField value="{!Task.Subject}"/>
+                    <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!blnSubject}">
+                    <strong>{!$Label.Label_Error}:</strong> {!$Label.Label_You_must_enter_a_value}
+                    </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:inputField value="{!Task.WhoId}"/>
+               
+                <apex:inputField value="{!Task.ActivityDate}" />
+                <apex:inputField value="{!Task.Group_Id__c}" rendered="false" />
+                <apex:inputField value="{!Task.StageId__c}" rendered="false" />
+                <apex:pageBlockSectionItem />
+                <apex:inputField value="{!Task.Closing_date__c}" />
+                <apex:pageBlockSectionItem />
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="1">
+            <apex:pageBlockSectionItem id="idPBSI03">
+                <apex:outputLabel value="{!$ObjectType.Task.fields.Description__c.label}"/>
+                <apex:outputPanel styleClass="requiredInput" layout="block" rendered="true">
+                    <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                        <apex:inputField value="{!Task.Description__c}" style="width:400px;height:100px" />
+                    <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!blnDescription}">
+                    <strong>{!$Label.Label_Error}:</strong> {!$Label.Label_You_must_enter_a_value}
+                    </apex:outputPanel>
+                    </apex:outputPanel>    
+            </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="2" title="{!$Label.Additional_Information_Title}">
+            <apex:pageBlockSectionItem id="idPBSI04">
+            <apex:outputLabel value="{!$ObjectType.Task.fields.Status.label}"/>
+            <apex:inputField value="{!Task.Status}" required="true" rendered="true"/>                    
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem id="idPBSI05">
+                <apex:outputLabel value="{!$ObjectType.Task.fields.Justification__c.label}"/>
+                <apex:outputPanel styleClass="" layout="block" rendered="true">
+                    <apex:outputPanel styleClass="requiredBlock" layout="block"/>                
+                        <apex:inputTextArea value="{!Task.Justification__c}" disabled="{!blnDisabled}" required="fasle" style="width:200px;"
+                        onkeydown="checkLimit(this,this.form.countdown,250);"  
+                        onkeyup="checkLimit(this,this.form.countdown,250);" onchange="checkLimit(this,this.form.countdown,250);"/>
+                        <font size="1">(Máximo de caracteres: 250)<br/>
+                        Você tem <input readonly="true" type="text" name="countdown" size="3" value="250"/> caracteres restantes.</font>
+                    <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!blnJustification}">
+                    <strong>{!$Label.Label_Error}:</strong> {!$Label.Label_You_must_enter_a_value}
+                    </apex:outputPanel>
+                    </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem id="idPBSI06">
+                <apex:outputLabel value="{!$ObjectType.Task.fields.Priority.label}"/>
+                <apex:inputField value="{!Task.Priority}" required="true" />
+            </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="2" title="{!$Label.Comments_Title}">
+                <apex:inputField value="{!Task.Description}" style="width:200px;"/>
+                <apex:inputField value="{!Task.Comment_History__c}" style="width:200px;"/>
+                <apex:inputField value="{!Task.Comments_2__c}" style="width:200px;"/>
+                <apex:inputField value="{!Task.Comment_2_History__c}" style="width:200px;"/>
+                <apex:inputField value="{!Task.Comments_3__c}" style="width:200px;"/>
+                <apex:inputField value="{!Task.Comment_3_History__c}" style="width:200px;"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" title="{!$Label.Response_Title}">
+                <apex:inputField value="{!Task.Answer__c}" style="width:200px;"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" title="{!$Label.Other_Information_Title}">
+                <apex:inputField value="{!Task.Status_history__c}" style="width:200px;"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" title="{!$Label.Reminder_Title}">
+                <apex:inputField value="{!Task.IsReminderSet}"
+                    onclick="showReminderDateTimeDiv(this);" />
+                <apex:outputPanel id="ReminderDateTimeDiv">
+                    <apex:inputField id="ReminderDateTime"
+                        value="{!Task.ReminderDateTime}" />
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+    var oldonload = window.onload;
+    window.onload = init;
+
+    function init() {
+        if (oldonload != null)
+            oldonload();
+        showReminderDateTimeDiv(document
+                .getElementById("j_id0:form1:j_id2:j_id58:j_id59"));
+    }
+
+    function showReminderDateTimeDiv(obj) {
+        var div = document
+                .getElementById("j_id0:form1:j_id2:j_id58:ReminderDateTimeDiv");
+        if (obj.checked) {
+            div.style.display = '';
+        } else {
+            div.style.display = 'none';
+        }
+    }
+    
+    function setGroupInput( GroupId )
+    {   
+        updateGroupInfo( GroupId );
+    }  
+</script>
+</apex:page>

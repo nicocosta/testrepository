@@ -1,0 +1,775 @@
+<apex:page id="idPage" standardController="Case"
+    extensions="SubCaseDisplayPDF_ctr" renderAs="pdf">
+    
+    <!-- Stylesheets -->
+    <apex:stylesheet value="{!$Resource.PDFDocumentStyle}" />
+
+    <apex:image value="{!URLFOR($Resource.SalesforceImage)}"
+        styleClass="imgClass" />
+
+    <apex:sectionHeader title="{!Case.CaseNumber}" />
+
+    <apex:form >
+
+        <apex:pageBlock mode="maindetail">
+
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.RecordTypeId.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.RecordTypeId}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Account.fields.Name.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.AccountId}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$Label.Parent_Case}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.ParentId}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Patient_Name__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Patient_Name__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Case_Subcase_Number__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Case_Subcase_Number__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Migration_Id__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Migration_Id__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Receipt_date_of_report__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Receipt_date_of_report__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.ContactId.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.ContactId}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Origin.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Origin}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Flow_Type__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Flow_Type__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Case_Type__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Case_Type__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Media__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Media__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Case_subtype_case__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Case_subtype_case__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.FV_Analyst_Responsible__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.FV_Analyst_Responsible__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Case_Mail_Response_Date__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Case_Mail_Response_Date__c}" />
+                    </td>                   
+                </tr>                                                                                                                       
+            </table>
+
+            <div class="tertiaryPalette">{!$Label.Additional_Information}
+            </div>
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Status.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Status}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Priority.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Priority}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Do_you_want_to_receive_an_email_response__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Do_you_want_to_receive_an_email_response__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Non_attendance_reason__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Non_attendance_reason__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Subcase_Description__c.label}" />
+                    </td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Subcase_Description__c}" />
+                    </td>
+                </tr>               
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Subcase_Solution_Description__c.label}" />
+                    </td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Subcase_Solution_Description__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Subcase_Solution_Description_Email_Res__c.label}" />
+                    </td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Subcase_Solution_Description_Email_Res__c}" />
+                    </td>
+                </tr>                                                                                                                                                               
+            </table>
+
+            <div class="tertiaryPalette">{!$Label.Request_Assistance_Other_Areas}
+            </div>
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Answer_Task__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Answer_Task__c}" />
+                    </td>               
+                </tr>                                                                                                                                                           
+            </table>
+
+            <div class="tertiaryPalette">{!$Label.Product_Information}
+            </div>
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Product__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Product__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Product_Batch_number__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Product_Batch_number__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Manufacture_Date_Day__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Manufacture_Date_Day__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Expire_Date_Day__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Expire_Date_Day__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Manufacture_Date_Month__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Manufacture_Date_Month__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Expire_Date_Month__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Expire_Date_Month__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Manufacture_Date_Year__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Manufacture_Date_Year__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Expire_Date_Year__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Expire_Date_Year__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+					<td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Clinical_Trial__c.label}" />
+					</td>				
+					<td class="dataCol"><apex:outputField value="{!Case.Clinical_Trial__c}" />
+					</td>				
+				</tr>                                                                                                                                                                                               
+            </table>
+
+            <div class="tertiaryPalette">{!$Label.Technical_Complaint}  
+            </div>
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Number_of_complained_packages__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Number_of_complained_packages__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Invoice_number__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Invoice_number__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Reimbursement_via__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Reimbursement_via__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Reimbursement_value__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Reimbursement_value__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Do_you_want_to_receive_the_analysis__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Do_you_want_to_receive_the_analysis__c}" />
+                    </td>                   
+                </tr>                                                                                                                                                                                               
+            </table>
+
+            <div class="tertiaryPalette">{!$Label.Analysis_Data}
+            </div>
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.QC_number_Technical_Claim_Number__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.QC_number_Technical_Claim_Number__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Complaint_Response__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Complaint_Response__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Complaint_investigation_results__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Complaint_investigation_results__c}" />
+                    </td>                   
+                </tr>
+                                                                                                                                                                                                                
+            </table>
+            <div class="tertiaryPalette">{!$Label.Analysis_Data_Sample}
+            </div>
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.QC_number_Technical_Claim_Number_sample__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.QC_number_Technical_Claim_Number_sample__c  }" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Complaint_response_sample__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Complaint_response_sample__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Complaint_investigation_results_sample__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Complaint_investigation_results_sample__c}" />
+                    </td>                   
+                </tr>                                                                                                                                                                                               
+            </table>
+
+            <div class="tertiaryPalette">{!$Label.Reimbursement_Data}
+            </div>
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Copy_data_from_client__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Copy_data_from_client__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Bank_Name__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Bank_Name__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Bank_Account_Name__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Bank_Account_Name__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Agency_number__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Agency_number__c}" />
+                    </td>                                       
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Person_identification_number_CPF__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Person_identification_number_CPF__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Bank_Account_number__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Bank_Account_number__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Phone__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Phone__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Address__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Address__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Price__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Price__c}" />
+                    </td>               
+                </tr>                                                                                                                                                                                                                                               
+            </table>
+
+            <div class="tertiaryPalette">{!$Label.Technical_Request}
+            </div>
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Technical_Request_Type__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Technical_Request_Type__c}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Technical_Request_subtype__c.label}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.Technical_Request_subtype__c}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Request_Numbers__c.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Request_Numbers__c}" />
+                    </td>                                       
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.CreatedDate.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.CreatedDate}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.ClosedDate.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.ClosedDate}" />
+                    </td>                                       
+                </tr>                                                                                                                                                                                                               
+            </table>
+            
+            <div class="tertiaryPalette">{!$Label.SystemInformationTitleSection}
+            </div>
+            <table width="100%">
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$Label.Created_by}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.CreatedById}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$Label.Last_Modified_By}" /></td>
+                    <td class="dataCol"><apex:outputField value="{!Case.LastModifiedById}" />
+                    </td>                   
+                </tr>
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.CreatedDate.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.CreatedDate}" />
+                    </td>                   
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.LastModifiedDate.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.LastModifiedDate}" />
+                    </td>                                                           
+                </tr>               
+                <tr>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Subject.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Subject}" />
+                    </td>
+                    <td class="labelCol"><apex:outputText value="{!$ObjectType.Case.fields.Description.label}" />
+                    </td>               
+                    <td class="dataCol"><apex:outputField value="{!Case.Description}" />
+                    </td>                                                               
+                </tr>                                                                                                                                                                                                               
+            </table>             
+            
+            <div class="tertiaryPalette">
+                {!$ObjectType.CaseComment.LabelPlural}</div>
+            <apex:dataTable value="{!CaseComments}" var="var"
+                rendered="{!NOT(ISNULL(CaseComments))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.createdDate}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Created_by}" /></th>
+                                    <td><apex:outputText value="{!var.createdName}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.CaseComment.fields.LastModifiedDate.label}" /></th>
+                                    <td><apex:outputText value="{!var.lastModifiedDate}" /></td>
+                                </tr>                               
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Comments}" /></th>
+                                    <td><apex:outputText value="{!var.description}" /></td>
+                                </tr>                               
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(CaseComments))}" styleClass="noRowsHeader"></apex:outputLabel>          
+            
+            <div class="tertiaryPalette">
+                {!$ObjectType.OpenActivity.LabelPlural}</div>
+            <apex:dataTable value="{!opnActvty}" var="var"
+                rendered="{!NOT(ISNULL(opnActvty))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.title}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Due_Date}" /></th>
+                                    <td><apex:outputText value="{!var.dueDate}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.OpenActivity.fields.Status.label}" /></th>
+                                    <td><apex:outputText value="{!var.description}" /></td>
+                                </tr>                               
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Assigned_To}" /></th>
+                                    <td><apex:outputText value="{!var.groupName}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.OpenActivity.fields.Description.label}" /></th>
+                                    <td><apex:outputText value="{!var.Comments}" /></td>
+                                </tr>                                                                   
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(opnActvty))}" styleClass="noRowsHeader"></apex:outputLabel> 
+                
+            <div class="tertiaryPalette">
+                {!$ObjectType.ActivityHistory.LabelPlural}</div>
+            <apex:dataTable value="{!actvtyHstry}" var="var"
+                rendered="{!NOT(ISNULL(actvtyHstry))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.title}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Due_Date}" /></th>
+                                    <td><apex:outputText value="{!var.dueDate}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.ActivityHistory.fields.Status.label}" /></th>
+                                    <td><apex:outputText value="{!var.description}" /></td>
+                                </tr>                               
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Assigned_To}" /></th>
+                                    <td><apex:outputText value="{!var.groupName}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.ActivityHistory.fields.lastModifiedDate.label}" /></th>
+                                    <td><apex:outputText value="{!var.lastModifiedDate}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Task.fields.Justification__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.justification}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Task.fields.Comments_2__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.Comments2}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Task.fields.Comments_3__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.Comments3}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.User.fields.Alias.label}" /></th>
+                                    <td><apex:outputText value="{!var.userName2}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.ActivityHistory.fields.Description.label}" /></th>
+                                    <td><apex:outputText value="{!var.Comments}" /></td>
+                                </tr>                                                                                                                                                                                                                                               
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(actvtyHstry))}" styleClass="noRowsHeader"></apex:outputLabel>   
+                
+            <div class="tertiaryPalette">
+                {!$ObjectType.FAQ_x_Case__c.LabelPlural}</div>
+            <apex:dataTable value="{!faqXcase}" var="var"
+                rendered="{!NOT(ISNULL(faqXcase))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.title}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.FAQ_x_Case__c.fields.FAQ__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.description}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Created_by}" /></th> 
+                                    <td><apex:outputText value="{!var.createdName}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.FAQ_x_Case__c.fields.createdDate.label}" /></th>
+                                    <td><apex:outputText value="{!var.createdDate}" /></td>
+                                </tr>                                                                   
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Last_Modified_By}" /></th> 
+                                    <td><apex:outputText value="{!var.lastModifiedName}" /></td>
+                                </tr>   
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.FAQ_x_Case__c.fields.lastModifiedDate.label}" /></th>
+                                    <td><apex:outputText value="{!var.lastModifiedDate}" /></td>
+                                </tr>                                                                                                                                                                                                                                           
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(faqXcase))}" styleClass="noRowsHeader"></apex:outputLabel>
+                
+            <div class="tertiaryPalette">
+                {!$ObjectType.Safety_Individual_Report__c.LabelPlural}</div>
+            <apex:dataTable value="{!sftyRprt}" var="var"
+                rendered="{!NOT(ISNULL(sftyRprt))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.title}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Safety_Individual_Report__c.fields.Subcase_seriousness__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.description}" /></td>
+                                </tr>                               
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Safety_Individual_Report__c.fields.Receipt_date_of_report__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.dueDate}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Safety_Individual_Report__c.fields.Client_Name__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.userName}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Safety_Individual_Report__c.fields.Patient_Name__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.patientName}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Safety_Individual_Report__c.fields.PV_system_number_Sina__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.PVsystemBumber}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Safety_Individual_Report__c.fields.Case_Subcase_Number__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.subCaseNumber}" /></td>
+                                </tr>                                                                                                                                                                                                                                           
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(sftyRprt))}" styleClass="noRowsHeader"></apex:outputLabel>
+                
+            <div class="tertiaryPalette">
+                {!$ObjectType.Change_Request__c.LabelPlural}</div>
+            <apex:dataTable value="{!chngRqts}" var="var"
+                rendered="{!NOT(ISNULL(chngRqts))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.title}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Change_Request__c.fields.Visit_type__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.description}" /></td>
+                                </tr>                               
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Change_Request__c.fields.CreatedDate.label}" /></th>
+                                    <td><apex:outputText value="{!var.createdDate}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Change_Request__c.fields.Status__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.status}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Change_Request__c.fields.CR_number__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.CRnumber}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Change_Request__c.fields.CR_error_message__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.CRerror}" /></td>
+                                </tr>                                                                                                                                                                                                           
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(chngRqts))}" styleClass="noRowsHeader"></apex:outputLabel>                  
+                                                                            
+            <div class="tertiaryPalette">
+                {!$ObjectType.SFDC_Script_Header__c.LabelPlural}</div>
+            <apex:dataTable value="{!scrpthdr}" var="var"
+                rendered="{!NOT(ISNULL(scrpthdr))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.title}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.SFDC_Script_Header__c.fields.Script__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.description}" /></td>
+                                </tr>                               
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.SFDC_Script_Header__c.fields.Score__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.score}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.SFDC_Script_Header__c.fields.Comments__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.comments}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.SFDC_Script_Header__c.fields.CreatedDate.label}" /></th>
+                                    <td><apex:outputText value="{!var.createdDate}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.SFDC_Script_Header__c.fields.Date_Taken__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.dueDate}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.SFDC_Script_Header__c.fields.Account__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.userName}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.SFDC_Script_Header__c.fields.Contact__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.userName2}" /></td>
+                                </tr>                                                                                                                                                                                                                                                                           
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(scrpthdr))}" styleClass="noRowsHeader"></apex:outputLabel>
+
+
+            <div class="tertiaryPalette">
+                {!$ObjectType.CaseHistory.LabelPlural}</div>
+            <apex:dataTable value="{!SomeObjectHistories}" var="var"
+                rendered="{!NOT(ISNULL(SomeObjectHistories))}">
+                <apex:column >
+                    <div class="pbHeader">
+                        <apex:outputField value="{!var.History.CreatedDate}" />
+                    </div>
+                    <div>
+                        <table class="list">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.User}" /></th>
+                                    <td><apex:outputField id="fieldCreatedDate"
+                                            value="{!var.History.CreatedBy.Name}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Action}" /></th>  
+                                    <td><apex:outputText id="textActionFormat"
+                                            value="{!var.ActionFormat}" escape="false">
+
+                                            <apex:param value="{!var.History.Field}" />
+                                            <apex:param value="{!var.FieldLabel}" />
+                                            <apex:param value="{!var.History.OldValue}" />
+                                            <apex:param value="{!var.History.NewValue}" />
+                                        </apex:outputText></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(SomeObjectHistories))}"
+                styleClass="noRowsHeader"></apex:outputLabel>
+
+
+            <div class="tertiaryPalette">
+                {!$ObjectType.Attachment.LabelPlural}</div>
+            <apex:dataTable value="{!attchmnts}" var="var"
+                rendered="{!NOT(ISNULL(attchmnts))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.title}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>                             
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Attachment.fields.ContentType.label}" /></th>
+                                    <td><apex:outputText value="{!var.description}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Created_by}" /></th>
+                                    <td><apex:outputText value="{!var.createdName}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Attachment.fields.LastModifiedDate.label}" /></th>
+                                    <td><apex:outputText value="{!var.lastModifiedDate}" /></td>
+                                </tr>                                                                                                                                                                                                                                                                       
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(attchmnts))}" styleClass="noRowsHeader"></apex:outputLabel> 
+                
+            <div class="tertiaryPalette">
+                {!$ObjectType.Case_History__c.LabelPlural}</div>
+            <apex:dataTable value="{!caseHstr_cstm}" var="var"
+                rendered="{!NOT(ISNULL(caseHstr_cstm))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.title}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Case_History__c.fields.Modify_Date_Time__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.lastModifiedDate}" /></td>
+                                </tr>                               
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Case_History__c.fields.Tracking_User__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.userName}" /></td> 
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Case_History__c.fields.Field__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.description}" /></td>
+                                </tr>                               
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Case_History__c.fields.New_Value__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.newValue}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Case_History__c.fields.Old_Value__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.oldValue}" /></td>
+                                </tr>                                                                                                                                                                                                                                                                       
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(caseHstr_cstm))}" styleClass="noRowsHeader"></apex:outputLabel>                     
+                
+            <div class="tertiaryPalette">
+                {!$ObjectType.Case_Mail_Response__c.LabelPlural}</div>
+            <apex:dataTable value="{!lstMailRsp}" var="var"
+                rendered="{!NOT(ISNULL(lstMailRsp))}">
+                <apex:column >
+                    <div class="pbHeader">{!var.Name}</div>
+                    <div>
+                        <table class="list">
+                            <tbody>                             
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$ObjectType.Case_Mail_Response__c.fields.Sender__c.label}" /></th>
+                                    <td><apex:outputText value="{!var.Sender__c}" /></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><apex:outputText value="{!$Label.Created_by}" /></th>
+                                    <td><apex:outputText value="{!var.CreatedBy.Name}" /></td>
+                                </tr>                                                                                                                                                                                                                                                                                                                               
+                            </tbody>
+                        </table>
+                    </div>
+                </apex:column>
+            </apex:dataTable>
+            <apex:outputLabel value="{!$Label.NoRecordsToDisplayLabel}"
+                rendered="{!(ISNULL(lstMailRsp))}" styleClass="noRowsHeader"></apex:outputLabel>                                                
+                            
+    </apex:pageBlock>       
+
+    </apex:form> 
+</apex:page>
